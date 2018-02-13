@@ -8,4 +8,4 @@ When the player finish a wave, extra life point has been added. When the enemy s
 There are also various bunkers that protect the player from the aliens’ attack, but it can be destroyed after getting too much hit from both player and alien ships.
 Further features might be added during the development stage.<br><br>
 Project relevant Link: http://www.pacxon4u.com/space-invaders/
-
+Google doc for meeting logs: https://docs.google.com/document/d/1HlLUWUcuohISESt-HMaZ98GZl6S_uKkuhiq3i85oTXk/edit?usp=sharing
