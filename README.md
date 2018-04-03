@@ -9,4 +9,3 @@ There are also various bunkers that protect the player from the aliens’ attack
 Further features might be added during the development stage.<br><br>
 Project relevant Link: http://www.pacxon4u.com/space-invaders/ <br>
 Google doc for meeting logs: https://docs.google.com/document/d/1HlLUWUcuohISESt-HMaZ98GZl6S_uKkuhiq3i85oTXk/edit?usp=sharing
-
