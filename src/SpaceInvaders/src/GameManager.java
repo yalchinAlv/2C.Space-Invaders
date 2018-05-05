@@ -1,31 +1,62 @@
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class GameManager extends JPanel implements Runnable{
 	
-	private final Dimension DIMENSIONS = new Dimension(680, 350);
+	File Laser = new File("src/audio/laser.WAV");
+	File Boom = new File("src/audio/boom.WAV");
+	File PlayerBoom = new File("src/audio/playerboom.WAV");
+	File Music = new File("src/audio/aliendream.WAV");
+	File GameMusic = new File("src/audio/rocker.WAV");
+	Clip clip;
+	
+	//Media musicFile = new Media("src/audio/aliendream.WAV");
+	//MediaPlayer music = new MediaPlayer(musicFile);
+	
+	private final Dimension DIMENSIONS = new Dimension(880, 550);
 	private final ImageIcon BG_IMAGE = new ImageIcon("src/images/bg.jpg");
 	private final ImageIcon EXPLOSION = new ImageIcon("src/images/explosion.png");
+	public  final ImageIcon GUIDE = new ImageIcon("src/images/howtoplay.jpg");
 	
 	private ArrayList<EnemyShip> enemies;
 	private PlayerShip player;
+	private Menu menu;
 	private String message = "Game Over";
 	private boolean isGameOver;
 	private int deaths;
 	private int direction = 1;
+	private boolean isGameMusicOn = false;
 	
+	
+	
+	public static enum STATE{
+		MENU,
+		GAME,
+		HOWTOPLAY
+	};
+	
+	public static STATE State = STATE.MENU;
 	private Thread animator;
 	
 	public GameManager() {
@@ -34,15 +65,21 @@ public class GameManager extends JPanel implements Runnable{
 		setFocusable(true);
 		setSize(DIMENSIONS);
 		
+		
 		gameInit();
 		setDoubleBuffered(true);
 	}
 	
+
 	public void gameInit() {
 		
 		deaths = 0;
 		isGameOver = false;
 		enemies = new ArrayList<>();
+		
+	
+		menu = new Menu();
+		this.addMouseListener(new InputManager());
 		
 		for (int i = 0; i < 5; i++)
 			for (int j = 0; j < 7; j++)
@@ -58,7 +95,44 @@ public class GameManager extends JPanel implements Runnable{
 		}
 	}
 	
+	public void playMusic(File Sound) {
+		
+		try
+		{
+			clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(Sound));
+			clip.start();
+			//Thread.sleep(clip.getMicrosecondLength()/1000);
+				
+		}
+			
+		catch(Exception e)
+		{
+			
+		}
+	}
+	
+public void loopMusic(File loopSound) {
+		
+		try
+		{
+			clip = AudioSystem.getClip();
+			clip.open(AudioSystem.getAudioInputStream(loopSound));
+			clip.loop(clip.LOOP_CONTINUOUSLY);
+			//Thread.sleep(clip.getMicrosecondLength()/1000);
+				
+		}
+			
+		catch(Exception e)
+		{
+			
+		}
+	}
+
+	
+
 	public void drawEnemies(Graphics g) {
+		 	
 		
 		for (EnemyShip enemy : enemies) {
 			
@@ -66,9 +140,11 @@ public class GameManager extends JPanel implements Runnable{
 				g.drawImage(enemy.getImage(), enemy.getX(), enemy.getY(), this);
 			
 		}
+		
 	}
 	
 	private void drawPlayer(Graphics g) {
+		
 		
 		if (!player.isDead())
 			g.drawImage(player.getImage(), player.getX(), player.getY(), this);
@@ -76,17 +152,22 @@ public class GameManager extends JPanel implements Runnable{
 		if (player.isDead()) {
 			isGameOver = true;
 		}
+		
 	}
 	
 	private void drawBullet(Graphics g) {
 		
+		
 		Bullet bullet = player.getBullet();
 		if (!bullet.isDead())
 			g.drawImage(bullet.getImage(), bullet.getX(), bullet.getY(), this);
-			
+		   
+		
 	}
 	
 	private void drawBombing(Graphics g) {
+		
+
 		
 		for (EnemyShip enemy : enemies) {
 			
@@ -94,10 +175,14 @@ public class GameManager extends JPanel implements Runnable{
 			if (!bullet.isDead())
 				g.drawImage(bullet.getImage(), bullet.getX(), bullet.getY(), this);
 		}
-	}
+		}
+		
+
 	
 	@Override
 	public void paintComponent(Graphics g) {
+	    
+		Graphics2D g2d = (Graphics2D) g;
 		super.paintComponent(g);
 		
 		g.setColor(Color.white);
@@ -112,14 +197,45 @@ public class GameManager extends JPanel implements Runnable{
         g.setFont(small);
         g.drawString("Score: " + deaths * 10, 0, metr.getHeight());
         
+        if(State == STATE.HOWTOPLAY) {
+        	g.drawImage(GUIDE.getImage(), 0, 0, DIMENSIONS.width, DIMENSIONS.height, this);
+        	Rectangle menuButton = new Rectangle(WIDTH / 2 + 650, 50, 180, 40);
+        	Font fnt2 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt2);
+    		g.setColor(Color.yellow);
+        	g.drawString("   MENU", menuButton.x + 19,menuButton.y + 30 );
+        	g2d.draw(menuButton);
+        }
+  
+        
         if (!isGameOver) {
-
+        	
+        	if(State == STATE.GAME) {
+        		
+        		if(!isGameMusicOn)
+        		{
+        			clip.stop();
+        			loopMusic(GameMusic);
+        			isGameMusicOn = true;
+        		}
+        	
             drawEnemies(g);
             drawPlayer(g);
             drawBullet(g);
             drawBombing(g);
         }
-
+        	else if (State == STATE.MENU) {
+        		if(clip == null) 
+        		{
+        			loopMusic(Music);
+        			//clip = null;
+        		}
+        		menu.render(g);
+        		//music.play();
+        	}
+        }
+        
+  
         Toolkit.getDefaultToolkit().sync();
         g.dispose();
 	}
@@ -162,6 +278,8 @@ public class GameManager extends JPanel implements Runnable{
 		player.move();
 		
 		Bullet bullet = player.getBullet();
+		
+
 		if (!bullet.isDead()) {
 			
 			int bulletX = bullet.getX();
@@ -179,6 +297,7 @@ public class GameManager extends JPanel implements Runnable{
                             && bulletY <= (enemyY + enemy.getImage().getHeight(null))) {
 
                         enemy.setImage(EXPLOSION.getImage());
+                        playMusic(Boom);
                         enemy.setDead(true);
                         deaths++;
                         bullet.setDead(true);
@@ -236,7 +355,7 @@ public class GameManager extends JPanel implements Runnable{
 
                 int y = enemy.getY();
 
-                if (y > 340) {
+                if (y > 540) {
                     isGameOver = true;
                     message = "Invasion!";
                 }
@@ -272,6 +391,7 @@ public class GameManager extends JPanel implements Runnable{
                         && bombY <= (playerY + 10)) {
 
                     player.setImage(EXPLOSION.getImage());
+                    playMusic(PlayerBoom);
                     player.setDead(true);
                     b.setDead(true);
                 }
@@ -281,7 +401,7 @@ public class GameManager extends JPanel implements Runnable{
                 
                 b.setY(b.getY() + 1);
                 
-                if (b.getY() >= 340) {
+                if (b.getY() >= 540) {
                     b.setDead(true);
                 }
             }
@@ -289,10 +409,11 @@ public class GameManager extends JPanel implements Runnable{
         
         
 	}
-
+	
 	@Override
 	public void run() {
 		
+
 		long beforeTime, timeDiff, sleep;
 
         beforeTime = System.currentTimeMillis();
@@ -338,17 +459,21 @@ public class GameManager extends JPanel implements Runnable{
             int y = player.getY();
 
             int key = e.getKeyCode();
+            
+            if(State == STATE.GAME) {
 
             if (key == KeyEvent.VK_SPACE) {
                 
                 if (!isGameOver) {
                     if (player.getBullet().isDead()) {
                     	Bullet b = new Bullet(x, y, 0);
+                    	playMusic(Laser);
                     	b.setDead(false);
                         player.setBullet(b);
                     }
                 }
             }
+        }
         }
     }
 }
