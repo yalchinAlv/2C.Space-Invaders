@@ -1,4 +1,3 @@
-
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -47,13 +46,19 @@ public class GameManager extends JPanel implements Runnable{
 	private int deaths;
 	private int direction = 1;
 	private boolean isGameMusicOn = false;
+	private boolean isMenuMusicOn = true;
+	private boolean fromMute = false;
+	private boolean fromMenu = true;
+	
 	
 	
 	
 	public static enum STATE{
 		MENU,
 		GAME,
-		HOWTOPLAY
+		HOWTOPLAY,
+		SETTINGS,
+		MUTEMUSIC
 	};
 	
 	public static STATE State = STATE.MENU;
@@ -206,25 +211,91 @@ public void loopMusic(File loopSound) {
         	g.drawString("   MENU", menuButton.x + 19,menuButton.y + 30 );
         	g2d.draw(menuButton);
         }
+        
+        if (State == STATE.SETTINGS)
+        {
+        	g.drawImage(BG_IMAGE.getImage(), 0, 0, DIMENSIONS.width, DIMENSIONS.height, this);
+        	
+            Rectangle muteMusicButton = new Rectangle(WIDTH / 2 + 320, 250, 250, 40);
+        	Font fnt3 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt3);
+    		g.setColor(Color.green);
+        	g.drawString("       MUTE", muteMusicButton.x + 19, muteMusicButton.y + 30 );
+        	g2d.draw(muteMusicButton);
+        	
+        	
+        	/*Rectangle muteSoundButton = new Rectangle(WIDTH / 2 + 350, 350, 250, 40);
+        	Font fnt4 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt4);
+    		g.setColor(Color.green);
+        	g.drawString("MUTE SOUND", muteSoundButton.x + 19, muteSoundButton.y + 30 );
+        	g2d.draw(muteSoundButton);*/
+        	
+        	Rectangle menuButton = new Rectangle(WIDTH / 2 + 650, 50, 180, 40);
+        	Font fnt5 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt5);
+    		g.setColor(Color.green);
+        	g.drawString("   MENU", menuButton.x + 19, menuButton.y + 30 );
+        	g2d.draw(menuButton);
+        }
+        
+        else if(State == STATE.MUTEMUSIC)
+        {
+        	g.drawImage(BG_IMAGE.getImage(), 0, 0, DIMENSIONS.width, DIMENSIONS.height, this);
+        	
+            Rectangle muteMusicButton = new Rectangle(WIDTH / 2 + 320, 250, 250, 40);
+        	Font fnt3 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt3);
+    		g.setColor(Color.red);
+        	g.drawString("     UNMUTE", muteMusicButton.x + 19, muteMusicButton.y + 30 );
+        	g2d.draw(muteMusicButton);
+        	
+        	
+        	/*Rectangle muteSoundButton = new Rectangle(WIDTH / 2 + 350, 350, 250, 40);
+        	Font fnt4 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt4);
+    		g.setColor(Color.green);
+        	g.drawString("MUTE SOUND", muteSoundButton.x + 19, muteSoundButton.y + 30 );
+        	g2d.draw(muteSoundButton);*/
+        	
+        	Rectangle menuButton = new Rectangle(WIDTH / 2 + 650, 50, 180, 40);
+        	Font fnt5 = new Font("arial", Font.BOLD, 30);
+        	g.setFont(fnt5);
+    		g.setColor(Color.green);
+        	g.drawString("   MENU", menuButton.x + 19, menuButton.y + 30 );
+        	g2d.draw(menuButton);
+        }
   
         
         if (!isGameOver) {
         	
         	if(State == STATE.GAME) {
         		
-        		if(!isGameMusicOn)
+        		
+        		if(!isGameMusicOn && isMenuMusicOn == true)
         		{
         			clip.stop();
         			loopMusic(GameMusic);
         			isGameMusicOn = true;
         		}
+        		
+        	   if (isGameMusicOn && isMenuMusicOn == false)
+        		{
+        			clip.stop();
+        			isGameMusicOn = false;
+        		}
+        	
         	
             drawEnemies(g);
             drawPlayer(g);
             drawBullet(g);
             drawBombing(g);
         }
-        	else if (State == STATE.MENU) {
+        	
+        	if (State == STATE.MENU) {
+        		
+        		fromMute = false;
+        		
         		if(clip == null) 
         		{
         			loopMusic(Music);
@@ -233,6 +304,41 @@ public void loopMusic(File loopSound) {
         		menu.render(g);
         		//music.play();
         	}
+        	
+        	if(State == STATE.MUTEMUSIC) {
+        		
+        		clip.stop();
+        		isMenuMusicOn = false;
+        		fromMute = true;
+        	
+        	}
+        	
+        	
+        	if(State == STATE.SETTINGS) {
+        		
+        		if(fromMute == true && isMenuMusicOn == false)
+        		{
+        			System.out.println("CASE 1");
+        			clip.start();
+        			isMenuMusicOn = true;
+        		}
+        		
+        	   if(fromMute == false  && isMenuMusicOn == false)
+        		{
+        			System.out.println("CASE 2");
+        			State = STATE.MUTEMUSIC;
+        			
+        		}
+        	   
+        	   else if(fromMute == false && isMenuMusicOn == true)
+        	   {
+        		   clip.start();
+        	   }
+        		
+        	}
+       
+        	
+
         }
         
   
