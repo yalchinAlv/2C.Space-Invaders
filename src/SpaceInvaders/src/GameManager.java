@@ -58,7 +58,8 @@ public class GameManager extends JPanel implements Runnable{
 		GAME,
 		HOWTOPLAY,
 		SETTINGS,
-		MUTEMUSIC
+		MUTEMUSIC,
+		MUTESOUND
 	};
 	
 	public static STATE State = STATE.MENU;
@@ -216,19 +217,19 @@ public void loopMusic(File loopSound) {
         {
         	g.drawImage(BG_IMAGE.getImage(), 0, 0, DIMENSIONS.width, DIMENSIONS.height, this);
         	
-            Rectangle muteMusicButton = new Rectangle(WIDTH / 2 + 320, 250, 250, 40);
+            Rectangle muteMusicButton = new Rectangle(WIDTH / 2 + 125, 175, 225, 40);
         	Font fnt3 = new Font("arial", Font.BOLD, 30);
         	g.setFont(fnt3);
     		g.setColor(Color.green);
-        	g.drawString("       MUTE", muteMusicButton.x + 19, muteMusicButton.y + 30 );
+        	g.drawString("MUTE MUSIC", muteMusicButton.x + 19, muteMusicButton.y + 30 );
         	g2d.draw(muteMusicButton);
         	
         	
-        	/*Rectangle muteSoundButton = new Rectangle(WIDTH / 2 + 350, 350, 250, 40);
+        	/*Rectangle muteSoundButton = new Rectangle(WIDTH / 2 + 125, 300, 225, 40);
         	Font fnt4 = new Font("arial", Font.BOLD, 30);
         	g.setFont(fnt4);
     		g.setColor(Color.green);
-        	g.drawString("MUTE SOUND", muteSoundButton.x + 19, muteSoundButton.y + 30 );
+        	g.drawString("MUTE SOUND", muteSoundButton.x + 10, muteSoundButton.y + 30 );
         	g2d.draw(muteSoundButton);*/
         	
         	Rectangle menuButton = new Rectangle(WIDTH / 2 + 650, 50, 180, 40);
@@ -243,19 +244,19 @@ public void loopMusic(File loopSound) {
         {
         	g.drawImage(BG_IMAGE.getImage(), 0, 0, DIMENSIONS.width, DIMENSIONS.height, this);
         	
-            Rectangle muteMusicButton = new Rectangle(WIDTH / 2 + 320, 250, 250, 40);
+            Rectangle muteMusicButton = new Rectangle(WIDTH / 2 + 450, 175, 270, 40);
         	Font fnt3 = new Font("arial", Font.BOLD, 30);
         	g.setFont(fnt3);
     		g.setColor(Color.red);
-        	g.drawString("     UNMUTE", muteMusicButton.x + 19, muteMusicButton.y + 30 );
+        	g.drawString("UNMUTE MUSIC", muteMusicButton.x + 19, muteMusicButton.y + 30 );
         	g2d.draw(muteMusicButton);
         	
         	
-        	/*Rectangle muteSoundButton = new Rectangle(WIDTH / 2 + 350, 350, 250, 40);
+        	/*Rectangle muteSoundButton = new Rectangle(WIDTH / 2 + 450, 300, 270, 40);
         	Font fnt4 = new Font("arial", Font.BOLD, 30);
         	g.setFont(fnt4);
-    		g.setColor(Color.green);
-        	g.drawString("MUTE SOUND", muteSoundButton.x + 19, muteSoundButton.y + 30 );
+    		g.setColor(Color.red);
+        	g.drawString("UNMUTE SOUND", muteSoundButton.x + 10, muteSoundButton.y + 30 );
         	g2d.draw(muteSoundButton);*/
         	
         	Rectangle menuButton = new Rectangle(WIDTH / 2 + 650, 50, 180, 40);
@@ -336,9 +337,6 @@ public void loopMusic(File loopSound) {
         	   }
         		
         	}
-       
-        	
-
         }
         
   
@@ -374,7 +372,7 @@ public void loopMusic(File loopSound) {
     }
 	
 	public void animation() {
-		
+		if(State == STATE.GAME) {
 		if (deaths == 35) {
 			
 			isGameOver = true;
@@ -433,7 +431,7 @@ public void loopMusic(File loopSound) {
                 while (i1.hasNext()) {
 
                     EnemyShip a2 = (EnemyShip) i1.next();
-                    a2.setY(a2.getY() + 15);
+                    a2.setY(a2.getY() + 30);
                 }
             }
 
@@ -446,7 +444,7 @@ public void loopMusic(File loopSound) {
                 while (i2.hasNext()) {
 
                     EnemyShip a = (EnemyShip) i2.next();
-                    a.setY(a.getY() + 15);
+                    a.setY(a.getY() + 30);
                 }
             }
         }
@@ -461,7 +459,7 @@ public void loopMusic(File loopSound) {
 
                 int y = enemy.getY();
 
-                if (y > 540) {
+                if (y > 450) {
                     isGameOver = true;
                     message = "Invasion!";
                 }
@@ -512,7 +510,7 @@ public void loopMusic(File loopSound) {
                 }
             }
         }
-        
+		}
         
 	}
 	

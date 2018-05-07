@@ -11,7 +11,7 @@ public class InputManager implements MouseListener {
 	boolean isMenu = true;
 	boolean isSettings = false;
 	boolean isMute = false;
-
+	boolean isSoundMute = false;
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
@@ -113,9 +113,9 @@ public class InputManager implements MouseListener {
 		}
 		
 		//Pressed Mute Music Button inside Settings
-		if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570 && isSettings == true)
+		if(mx > GameManager.WIDTH / 2 + 125 && mx <= GameManager.WIDTH / 2 + 350 && isSettings == true)
 		{
-			if(my >= 250 && my <= 290) 
+			if(my >= 175 && my <= 215) 
 			{
 
 				GameManager.State = GameManager.STATE.MUTEMUSIC;
@@ -143,9 +143,9 @@ public class InputManager implements MouseListener {
 		}
 		
 		//Pressed UnMute Button inside Mute Music
-		if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570 && isMute == true)
+		if(mx > GameManager.WIDTH / 2 + 450 && mx <= GameManager.WIDTH / 2 + 720 && isMute == true)
 		{
-			if(my >= 350 && my <= 390) 
+			if(my >= 175 && my <= 215) 
 			{
 
 				GameManager.State = GameManager.STATE.SETTINGS;
@@ -157,7 +157,18 @@ public class InputManager implements MouseListener {
 			}
 		}
 		
-		
+		//Pressed Mute Sound 
+		/*if(mx > GameManager.WIDTH / 2 + 450 && mx <= GameManager.WIDTH / 2 + 720 && isSettings == true) 
+		{
+			if(my >= 300 && my <= 340) 
+			{
+				
+			}
+		}*/
+			
+			
+			
+			
 		//Quit Button
 				if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570 && isMenu == true)
 				{

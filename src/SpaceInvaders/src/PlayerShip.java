@@ -4,7 +4,7 @@ import java.awt.event.KeyEvent;
 import javax.swing.ImageIcon;
 
 public class PlayerShip extends Ship {
-	private final int START_Y = 280;
+	private final int START_Y = 480;
     private final int START_X = 270;
     
     private final String playerImg = "src/images/playerShip.png";
