@@ -59,18 +59,18 @@ public class PlayerShip extends Ship {
     	bullet.setDead(false);
     }
 
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(KeyEvent e, int level) {
         
         int key = e.getKeyCode();
 
         if (key == KeyEvent.VK_LEFT) {
         
-            dx = -2;
+            dx = -2 - (level - 1);
         }
 
         if (key == KeyEvent.VK_RIGHT) {
         
-            dx = 2;
+            dx = 2 + (level - 1);
         }
     }
 

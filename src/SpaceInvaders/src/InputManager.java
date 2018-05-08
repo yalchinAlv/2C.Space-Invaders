@@ -43,9 +43,25 @@ public class InputManager implements MouseListener {
 			if(my >= 150 && my <= 190)
 			{
 				//Pressed Play Button
-				if (game.isGameOver())
-					game.gameInit();
-				
+//				if (game.isGameOver())
+//					game.gameInit();
+//				
+//				GameManager.State = GameManager.STATE.GAME;
+//				
+//				if (game.isMusicOn())
+//					game.setMusicMute(false);
+//				
+				GameManager.State = GameManager.STATE.LEVEL;
+				System.out.println("pressed play");
+				isMenu = false;
+				isSettings = false;
+				isMute = false;
+			}
+		}
+		// Continue button
+		if (isMenu && !game.isGameOver()) {
+			Rectangle contButton = new Rectangle(GameManager.WIDTH / 2 + 575, 150, 250, 40);
+			if (contButton.contains(mx, my)) {
 				GameManager.State = GameManager.STATE.GAME;
 				
 				if (game.isMusicOn())
@@ -87,7 +103,7 @@ public class InputManager implements MouseListener {
 		}
 		
 		//Pressed Settings Button
-		if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570)
+		if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570 && isMenu)
 		{
 			if(my >= 350 && my <= 390) 
 			{
@@ -208,6 +224,45 @@ public class InputManager implements MouseListener {
 				System.out.println("changed to menu");
 				if (game.isMusicOn())
 					game.setMusicMute(false);
+			}
+		}
+		
+		// Levels screen
+		if (GameManager.State == GameManager.STATE.LEVEL) {
+			Rectangle level1 = new Rectangle(GameManager.WIDTH / 2 + 100, 150, 200, 40);
+			Rectangle level2 = new Rectangle(GameManager.WIDTH / 2 + 100, 250, 200, 40);
+			Rectangle level3 = new Rectangle(GameManager.WIDTH / 2 + 100, 350, 200, 40);
+			Rectangle menu = new Rectangle(GameManager.WIDTH / 2 + 100, 450, 200, 40);
+			
+			if (level1.contains(mx, my)) {
+				game.setLevel(1);
+				game.gameInit();
+				GameManager.State = GameManager.STATE.GAME;
+				System.out.println("from level 1");
+				if (game.isMusicOn())
+					game.setMusicMute(false);
+			}
+			if (level2.contains(mx, my)) {
+				game.setLevel(2);
+				game.gameInit();
+				GameManager.State = GameManager.STATE.GAME;
+				System.out.println("from level 2");
+				if (game.isMusicOn())
+					game.setMusicMute(false);
+			}
+			if (level3.contains(mx, my)) {
+				game.setLevel(3);
+				game.gameInit();
+				GameManager.State = GameManager.STATE.GAME;
+				
+				if (game.isMusicOn())
+					game.setMusicMute(false);
+			}
+			if (menu.contains(mx, my)) {
+				GameManager.State = GameManager.STATE.MENU;
+				isMenu = true;
+				isSettings = false;
+				isMute = false;
 			}
 		}
 			

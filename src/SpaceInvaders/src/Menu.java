@@ -6,6 +6,7 @@ import java.awt.Rectangle;
 
 public class Menu{
 	
+	public Rectangle contButton = new Rectangle(GameManager.WIDTH / 2 + 575, 150, 250, 40);
 	public Rectangle playButton = new Rectangle(GameManager.WIDTH / 2 + 320, 150, 250, 40);
 	public Rectangle howToPlayButton = new Rectangle(GameManager.WIDTH / 2 + 320, 250, 250, 40);
 	public Rectangle settingsButton = new Rectangle(GameManager.WIDTH / 2 + 320, 350, 250, 40);
@@ -22,6 +23,13 @@ public class Menu{
 		
 		Font fnt1 = new Font("arial", Font.BOLD, 30);
 		g.setFont(fnt1);
+		
+		if (!GameManager.getInstance().isGameOver()) {
+			g.setColor(Color.green);
+			g.drawString("    CONTINUE", contButton.x + 19,contButton.y + 30 );
+			g2d.draw(contButton);
+		}
+		g.setColor(Color.red);
 		g.drawString("       PLAY", playButton.x + 19,playButton.y + 30 );
 		g2d.draw(playButton);
 		g.drawString("HOW TO PLAY", howToPlayButton.x + 19,howToPlayButton.y + 30 );

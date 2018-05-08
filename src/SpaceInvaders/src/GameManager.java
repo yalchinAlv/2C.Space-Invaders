@@ -51,6 +51,8 @@ public class GameManager extends JPanel implements Runnable{
 	private boolean fromMenu = true;
 	private boolean isSoundOn = true;
 	private boolean isMusicOn = true;
+	private int level;
+	private LevelScreen levelScreen;
 
 
 	public static enum STATE{
@@ -60,7 +62,8 @@ public class GameManager extends JPanel implements Runnable{
 		SETTINGS,
 		MUTEMUSIC,
 		MUTESOUND,
-		GAMEOVER
+		GAMEOVER,
+		LEVEL
 	};
 
 	public static STATE State = STATE.MENU;
@@ -84,6 +87,9 @@ public class GameManager extends JPanel implements Runnable{
 
 		isGameOver = true;
 		menu = new Menu();
+		levelScreen = new LevelScreen();
+		level = 1;
+		State = STATE.MENU;
 //		gameInit();
 		
 		if (animator == null || isGameOver) {
@@ -120,6 +126,10 @@ public class GameManager extends JPanel implements Runnable{
 	}
 	public boolean isMusicOn() {
 		return isMusicOn;
+	}
+	
+	public void setLevel(int level) {
+		this.level = level;
 	}
 
 	public void gameInit() {
@@ -400,7 +410,12 @@ public class GameManager extends JPanel implements Runnable{
 				
 				g.drawString("Score: " + deaths * 10, 5, DIMENSIONS.height - 5);
 				
+				g.setColor(Color.yellow);
+				g.drawString("Level: " + level, 200, DIMENSIONS.height - 5);
 				
+			}
+			if (State == STATE.LEVEL) {
+				levelScreen.render(g);
 			}
 //		}
 		
@@ -497,7 +512,7 @@ public class GameManager extends JPanel implements Runnable{
 				}
 
 				int y = bullet.getY();
-				y -= 4;
+				y -= 4 * level;
 
 				if (y < 0) {
 					bullet.setDead(true);
@@ -552,7 +567,7 @@ public class GameManager extends JPanel implements Runnable{
 						message = "Invasion!";
 					}
 
-					enemy.move(direction);
+					enemy.move(direction * level);
 				}
 			}
 
@@ -560,7 +575,7 @@ public class GameManager extends JPanel implements Runnable{
 
 			for (EnemyShip enemy: enemies) {
 
-				int fire = generator.nextInt(15);
+				int fire = generator.nextInt(15 * level);
 				Bullet b = enemy.getBomb();
 
 				if (fire == 5 && !enemy.isDead() && b.isDead()) {
@@ -594,9 +609,9 @@ public class GameManager extends JPanel implements Runnable{
 
 				if (!b.isDead()) {
 
-					b.setY(b.getY() + 1);
+					b.setY(b.getY() + level);
 
-					if (b.getY() >= 540) {
+					if (b.getY() >= 500) {
 						b.setDead(true);
 					}
 				}
@@ -636,11 +651,7 @@ public class GameManager extends JPanel implements Runnable{
 			}
 
 			beforeTime = System.currentTimeMillis();
-			
-			
 		}
-
-		
 	}
 
 	private class MyKeyAdapter extends KeyAdapter {
@@ -654,7 +665,7 @@ public class GameManager extends JPanel implements Runnable{
 		@Override
 		public void keyPressed(KeyEvent e) {
 
-			player.keyPressed(e);
+			player.keyPressed(e, level);
 
 			int x = player.getX();
 			int y = player.getY();
