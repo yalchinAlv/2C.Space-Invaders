@@ -6,8 +6,13 @@ public class SpaceInvaders {
 		
 		JFrame mainFrame = new JFrame("Space Invaders");
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		mainFrame.add(new GameManager());
-		mainFrame.setSize(880, 550);
+		
+		GameManager game = GameManager.getInstance();
+		game.addMouseListener(new InputManager());
+		mainFrame.add(game);
+		
+//		mainFrame.setSize(880, 550);
+		mainFrame.pack();
 		mainFrame.setLocationRelativeTo(null);
 		mainFrame.setResizable(false);
 		mainFrame.setVisible(true);

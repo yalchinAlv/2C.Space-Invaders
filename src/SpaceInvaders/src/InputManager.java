@@ -1,10 +1,6 @@
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-
-import javax.sound.sampled.Clip;
-import javax.swing.ImageIcon;
 
 public class InputManager implements MouseListener {
 	
@@ -12,6 +8,8 @@ public class InputManager implements MouseListener {
 	boolean isSettings = false;
 	boolean isMute = false;
 	boolean isSoundMute = false;
+	GameManager game = GameManager.getInstance();
+	
 	
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
@@ -45,11 +43,17 @@ public class InputManager implements MouseListener {
 			if(my >= 150 && my <= 190)
 			{
 				//Pressed Play Button
+				if (game.isGameOver())
+					game.gameInit();
+				
 				GameManager.State = GameManager.STATE.GAME;
+				
+				if (game.isMusicOn())
+					game.setMusicMute(false);
+				
 				isMenu = false;
 				isSettings = false;
 				isMute = false;
-				
 			}
 		}
 		
@@ -113,17 +117,15 @@ public class InputManager implements MouseListener {
 		}
 		
 		//Pressed Mute Music Button inside Settings
-		if(mx > GameManager.WIDTH / 2 + 125 && mx <= GameManager.WIDTH / 2 + 350 && isSettings == true)
+		if(mx > GameManager.WIDTH / 2 + 125 && mx <= GameManager.WIDTH / 2 + 350 && isSettings == true || isMute)
 		{
 			if(my >= 175 && my <= 215) 
 			{
-
 				GameManager.State = GameManager.STATE.MUTEMUSIC;
 				isMenu = false;
 				isSettings = false;
 				isMute = true;
-				
-				
+				game.setMusicMute(true);
 			}
 		}
 		
@@ -132,18 +134,15 @@ public class InputManager implements MouseListener {
 		{
 			if(my >= 50 && my <= 90) 
 			{
-
 				GameManager.State = GameManager.STATE.MENU;
 				isMenu = true;
 				isSettings = false;
 				isMute = false;
-				
-				
 			}
 		}
 		
 		//Pressed UnMute Button inside Mute Music
-		if(mx > GameManager.WIDTH / 2 + 450 && mx <= GameManager.WIDTH / 2 + 720 && isMute == true)
+		if(mx > GameManager.WIDTH / 2 + 450 && mx <= GameManager.WIDTH / 2 + 720 && isMute == true || isSettings)
 		{
 			if(my >= 175 && my <= 215) 
 			{
@@ -152,33 +151,77 @@ public class InputManager implements MouseListener {
 				isMenu = false;
 				isSettings = true;
 				isMute = false;
-				
+				game.setMusicMute(false);
 				
 			}
 		}
 		
 		//Pressed Mute Sound 
-		/*if(mx > GameManager.WIDTH / 2 + 450 && mx <= GameManager.WIDTH / 2 + 720 && isSettings == true) 
-		{
-			if(my >= 300 && my <= 340) 
-			{
-				
+		if (isSettings || isMute) {
+			Rectangle muteSoundButton = new Rectangle(GameManager.WIDTH / 2 + 125, 255, 225, 40);
+			Rectangle unMuteSoundButton = new Rectangle(GameManager.WIDTH / 2 + 450, 255, 225, 40);
+			System.out.println("check mute sound");
+			if (muteSoundButton.contains(mx, my)) {
+				game.setSoundMute(true);
+				System.out.println("setting sound");
 			}
-		}*/
+			else if (unMuteSoundButton.contains(mx, my)) {
+				game.setSoundMute(false);
+			}
 			
-			
+		}
+		
+		
+		// Restart and Menu in GAMEOVER
+		if (GameManager.State == GameManager.STATE.GAMEOVER) {
+			Rectangle menuButton = new Rectangle(GameManager.DIMENSIONS.width / 2 + 10, GameManager.DIMENSIONS.height - 150, 180, 40);
+			Rectangle restartButton = new Rectangle(GameManager.DIMENSIONS.width / 2 - 190, GameManager.DIMENSIONS.height - 150, 180, 40);
+			System.out.println("is in game over");
+			if (menuButton.contains(mx, my)) {
+				GameManager.State = GameManager.STATE.MENU;
+				isMenu = true;
+				isSettings = false;
+				isMute = false;
+				System.out.println("changed to menu");
+				if (game.isMusicOn())
+					game.setMusicMute(false);
+			}
+			else if (restartButton.contains(mx, my)) {
+				if (game.isGameOver())
+					game.gameInit();
+				
+				GameManager.State = GameManager.STATE.GAME;
+				isMenu = false;
+				isSettings = false;
+				isMute = false;
+			}
+		}
+		
+		// Pause in Game
+		if (GameManager.State == GameManager.STATE.GAME) {
+			Rectangle pauseButton = new Rectangle(GameManager.DIMENSIONS.width - 185, GameManager.DIMENSIONS.height - 45, 180, 40);
+			if (pauseButton.contains(mx, my)) {
+				GameManager.State = GameManager.STATE.MENU;
+				isMenu = true;
+				isSettings = false;
+				isMute = false;
+				System.out.println("changed to menu");
+				if (game.isMusicOn())
+					game.setMusicMute(false);
+			}
+		}
 			
 			
 		//Quit Button
-				if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570 && isMenu == true)
-				{
-					if(my >= 450 && my <= 490)
-					{
-						//Pressed Quit Button
-						System.exit(1);
-						
-					}
-				}
+		if(mx > GameManager.WIDTH / 2 + 320 && mx <= GameManager.WIDTH / 2 + 570 && isMenu == true)
+		{
+			if(my >= 450 && my <= 490)
+			{
+				//Pressed Quit Button
+				System.exit(1);
+				
+			}
+		}
 				
 		
 	}
